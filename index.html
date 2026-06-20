@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LobiWatch - Deine Video-Plattform">
+    <meta name="theme-color" content="#ff0000">
+    <title>LobiWatch - Videos, Streams & Community</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader">
+            <div class="logo-loader">🎬</div>
+            <h1>LobiWatch</h1>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p id="loadingText">Laden...</p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="icon-btn" id="menuToggle" aria-label="Menü">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo" data-page="home">
+                    <span class="logo-icon">🎬</span>
+                    <span class="logo-text">LobiWatch</span>
+                </a>
+            </div>
+
+            <div class="header-center">
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Suchen..." autocomplete="off">
+                    <select id="searchCategory">
+                        <option value="all">Alle</option>
+                        <option value="videos">Videos</option>
+                        <option value="channels">Kanäle</option>
+                        <option value="playlists">Playlists</option>
+                        <option value="shorts">Shorts</option>
+                        <option value="live">Live</option>
+                    </select>
+                    <button class="search-btn" id="searchBtn" aria-label="Suchen">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button class="icon-btn mic-btn" aria-label="Sprachsuche">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+
+            <div class="header-right">
+                <button class="icon-btn" id="createBtn" aria-label="Erstellen">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="icon-btn notification-btn" id="notificationBtn" aria-label="Benachrichtigungen">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge" id="notificationBadge">0</span>
+                </button>
+                <div class="user-menu" id="userMenuContainer">
+                    <button class="user-avatar-btn" id="userAvatarBtn">
+                        <img id="userAvatar" src="" alt="Profilbild">
+                    </button>
+                </div>
+                <div class="auth-buttons" id="authButtons">
+                    <button class="btn btn-outline" id="loginBtn">Anmelden</button>
+                    <button class="btn btn-primary" id="signupBtn">Registrieren</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <a href="#" class="sidebar-item active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Startseite</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="shorts">
+                    <i class="fas fa-bolt"></i>
+                    <span>Shorts</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="subscriptions">
+                    <i class="fas fa-clone"></i>
+                    <span>Abos</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="trending">
+                    <i class="fas fa-fire"></i>
+                    <span>Trends</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="music">
+                    <i class="fas fa-music"></i>
+                    <span>Musik</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="gaming">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Gaming</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="news">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Nachrichten</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="live">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Live</span>
+                </a>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Du</h3>
+                <a href="#" class="sidebar-item" data-page="history">
+                    <i class="fas fa-history"></i>
+                    <span>Verlauf</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="library">
+                    <i class="fas fa-photo-video"></i>
+                    <span>Bibliothek</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="watchlater">
+                    <i class="fas fa-clock"></i>
+                    <span>Später ansehen</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="liked">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Videos, die dir gefallen</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="downloads">
+                    <i class="fas fa-download"></i>
+                    <span>Downloads</span>
+                </a>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Abonnements</h3>
+                <div id="subscriptionsList" class="subscriptions-list">
+                    <!-- Wird dynamisch gefüllt -->
+                </div>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Mehr von LobiWatch</h3>
+                <a href="#" class="sidebar-item" data-page="premium">
+                    <i class="fas fa-crown"></i>
+                    <span>LobiWatch Premium</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="studio">
+                    <i class="fas fa-film"></i>
+                    <span>LobiWatch Studio</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Einstellungen</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="help">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Hilfe</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>&copy; 2026 LobiWatch</p>
+                <p>Made with ❤️</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <!-- Category Chips -->
+                <div class="category-chips" id="categoryChips">
+                    <button class="chip active" data-category="all">Alle</button>
+                    <button class="chip" data-category="gaming">Gaming</button>
+                    <button class="chip" data-category="music">Musik</button>
+                    <button class="chip" data-category="live">Live</button>
+                    <button class="chip" data-category="news">Nachrichten</button>
+                    <button class="chip" data-category="sports">Sport</button>
+                    <button class="chip" data-category="education">Bildung</button>
+                    <button class="chip" data-category="entertainment">Unterhaltung</button>
+                    <button class="chip" data-category="tech">Technologie</button>
+                    <button class="chip" data-category="cooking">Kochen</button>
+                    <button class="chip" data-category="travel">Reisen</button>
+                    <button class="chip" data-category="fashion">Mode</button>
+                    <button class="chip" data-category="fitness">Fitness</button>
+                    <button class="chip" data-category="comedy">Comedy</button>
+                    <button class="chip" data-category="science">Wissenschaft</button>
+                </div>
+
+                <!-- Video Grid -->
+                <div class="video-grid" id="videoGrid">
+                    <!-- Videos werden dynamisch geladen -->
+                </div>
+
+                <!-- Load More -->
+                <div class="load-more" id="loadMore">
+                    <button class="btn btn-outline" id="loadMoreBtn">Mehr laden</button>
+                </div>
+            </div>
+
+            <!-- Watch Page -->
+            <div id="watchPage" class="page">
+                <div class="watch-container">
+                    <div class="video-player-section">
+                        <div class="video-player-wrapper">
+                            <video id="videoPlayer" class="video-player" controls playsinline>
+                                <source src="" type="video/mp4">
+                                Dein Browser unterstützt das Video nicht.
+                            </video>
+                            <div class="video-overlay" id="videoOverlay">
+                                <button class="play-overlay-btn" id="playOverlayBtn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-details">
+                        <h1 class="video-title-main" id="videoTitleMain"></h1>
+                        <div class="video-actions-bar">
+                            <div class="video-stats">
+                                <span id="videoViews">0 Aufrufe</span>
+                                <span id="videoDate">• Heute</span>
+                            </div>
+                            <div class="video-actions">
+                                <button class="action-btn" id="likeBtn">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span id="likeCount">0</span>
+                                </button>
+                                <button class="action-btn" id="dislikeBtn">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    <span id="dislikeCount">0</span>
+                                </button>
+                                <button class="action-btn" id="shareBtn">
+                                    <i class="fas fa-share"></i>
+                                    <span>Teilen</span>
+                                </button>
+                                <button class="action-btn" id="downloadBtn">
+                                    <i class="fas fa-download"></i>
+                                    <span>Download</span>
+                                </button>
+                                <button class="action-btn" id="saveBtn">
+                                    <i class="fas fa-bookmark"></i>
+                                    <span>Speichern</span>
+                                </button>
+                                <button class="action-btn" id="moreBtn">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Channel Info -->
+                        <div class="channel-info-bar">
+                            <div class="channel-info-left">
+                                <img id="channelAvatar" src="" alt="Kanal" class="channel-avatar-large">
+                                <div class="channel-details">
+                                    <h3 class="channel-name" id="channelName"></h3>
+                                    <div class="channel-meta">
+                                        <span id="channelSubscribers">0 Abonnenten</span>
+                                        <span class="verified-badge" id="verifiedBadge" style="display:none">
+                                            <i class="fas fa-check-circle"></i>
+                                        </span>
+                                        <span class="premium-badge" id="premiumBadge" style="display:none">
+                                            <i class="fas fa-crown"></i> PREMIUM
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="channel-info-right">
+                                <button class="btn btn-primary" id="subscribeBtn">
+                                    <i class="fas fa-bell"></i>
+                                    <span>Abonnieren</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="video-description" id="videoDescription">
+                            <div class="description-content" id="descriptionContent"></div>
+                            <button class="show-more-btn" id="showMoreBtn">Mehr anzeigen</button>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="comments-section">
+                            <div class="comments-header">
+                                <h3><span id="commentCount">0</span> Kommentare</h3>
+                                <button class="sort-btn" id="sortCommentsBtn">
+                                    <i class="fas fa-sort"></i> Sortieren
+                                </button>
+                            </div>
+                            <div class="add-comment">
+                                <img id="commentUserAvatar" src="" alt="Du" class="comment-avatar">
+                                <div class="comment-input-container">
+                                    <input type="text" id="commentInput" placeholder="Kommentar hinzufügen...">
+                                    <div class="comment-actions" style="display:none">
+                                        <button class="btn btn-text" id="cancelCommentBtn">Abbrechen</button>
+                                        <button class="btn btn-primary" id="submitCommentBtn">Kommentieren</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comments-list" id="commentsList">
+                                <!-- Kommentare werden dynamisch geladen -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Videos -->
+                    <aside class="recommended-sidebar">
+                        <div class="recommended-header">
+                            <h3>Ähnliche Videos</h3>
+                        </div>
+                        <div class="recommended-list" id="recommendedList">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <!-- Channel Page -->
+            <div id="channelPage" class="page">
+                <div class="channel-banner" id="channelBanner">
+                    <img id="channelBannerImg" src="" alt="Banner">
+                </div>
+                <div class="channel-header">
+                    <img id="channelPageAvatar" src="" alt="Kanal" class="channel-avatar-xl">
+                    <div class="channel-header-info">
+                        <h1 id="channelPageName"></h1>
+                        <div class="channel-meta">
+                            <span id="channelPageHandle"></span>
+                            <span id="channelPageSubs"></span>
+                            <span id="channelPageVideos"></span>
+                        </div>
+                        <p class="channel-description-short" id="channelPageDesc"></p>
+                        <div class="channel-actions">
+                            <button class="btn btn-primary" id="channelSubscribeBtn">Abonnieren</button>
+                            <button class="btn btn-outline" id="channelMessageBtn">Nachricht</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="channel-tabs">
+                    <button class="tab-btn active" data-tab="videos">Videos</button>
+                    <button class="tab-btn" data-tab="shorts">Shorts</button>
+                    <button class="tab-btn" data-tab="live">Live</button>
+                    <button class="tab-btn" data-tab="playlists">Playlists</button>
+                    <button class="tab-btn" data-tab="community">Community</button>
+                    <button class="tab-btn" data-tab="channels">Kanäle</button>
+                    <button class="tab-btn" data-tab="about">Info</button>
+                </div>
+                <div class="channel-content">
+                    <div id="channelVideosTab" class="tab-content active">
+                        <div class="video-grid" id="channelVideoGrid"></div>
+                    </div>
+                    <div id="channelShortsTab" class="tab-content"></div>
+                    <div id="channelLiveTab" class="tab-content"></div>
+                    <div id="channelPlaylistsTab" class="tab-content"></div>
+                    <div id="channelCommunityTab" class="tab-content"></div>
+                    <div id="channelChannelsTab" class="tab-content"></div>
+                    <div id="channelAboutTab" class="tab-content">
+                        <div class="about-section">
+                            <h3>Beschreibung</h3>
+                            <p id="channelFullDesc"></p>
+                            <h3>Details</h3>
+                            <div class="channel-details-list">
+                                <div class="detail-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span id="channelEmail">Für Geschäftsanfragen</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-globe"></i>
+                                    <span id="channelCountry">Deutschland</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span id="channelJoined">Beigetreten am</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span id="channelTotalViews">0 Aufrufe</span>
+                                </div>
+                            </div>
+                            <h3>Links</h3>
+                            <div id="channelLinks" class="channel-links"></div>
+                            <h3>Statistiken</h3>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <i class="fas fa-users"></i>
+                                    <h4 id="statSubs">0</h4>
+                                    <p>Abonnenten</p>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-video"></i>
+                                    <h4 id="statVideos">0</h4>
+                                    <p>Videos</p>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-eye"></i>
+                                    <h4 id="statViews">0</h4>
+                                    <p>Gesamtaufrufe</p>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-heart"></i>
+                                    <h4 id="statLikes">0</h4>
+                                    <p>Likes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shorts Page -->
+            <div id="shortsPage" class="page">
+                <div class="shorts-container" id="shortsContainer">
+                    <!-- Shorts werden hier geladen -->
+                </div>
+            </div>
+
+            <!-- Search Results Page -->
+            <div id="searchPage" class="page">
+                <div class="search-header">
+                    <h2 id="searchQuery">Suchergebnisse für: ""</h2>
+                    <div class="search-filters">
+                        <button class="filter-btn active" data-filter="relevance">Relevanz</button>
+                        <button class="filter-btn" data-filter="date">Datum</button>
+                        <button class="filter-btn" data-filter="views">Aufrufe</button>
+                        <button class="filter-btn" data-filter="rating">Bewertung</button>
+                    </div>
+                </div>
+                <div class="search-results" id="searchResults">
+                    <!-- Ergebnisse werden dynamisch geladen -->
+                </div>
+            </div>
+
+            <!-- Upload Page -->
+            <div id="uploadPage" class="page">
+                <div class="upload-container">
+                    <h1>Video hochladen</h1>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h2>Videos zum Hochladen hier ablegen</h2>
+                        <p>Oder klicke, um eine Datei auszuwählen</p>
+                        <button class="btn btn-primary" id="selectFileBtn">Datei auswählen</button>
+                        <input type="file" id="videoFileInput" accept="video/*" style="display:none">
+                        <div class="upload-info">
+                            <p><i class="fas fa-info-circle"></i> Dein Konto ist noch nicht verifiziert. Videos sind auf 15 Minuten begrenzt.</p>
+                        </div>
+                    </div>
+                    <div class="upload-form" id="uploadForm" style="display:none">
+                        <div class="upload-progress" id="uploadProgress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="uploadProgressFill"></div>
+                            </div>
+                            <p id="uploadProgressText">0% hochgeladen</p>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Titel (erforderlich)</label>
+                                <input type="text" id="uploadTitle" maxlength="100" placeholder="Füge einen Titel hinzu, der deine Inhalte beschreibt">
+                                <small><span id="titleCharCount">0</span>/100</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Beschreibung</label>
+                                <textarea id="uploadDescription" maxlength="5000" placeholder="Erzähle den Zuschauern von deinem Video"></textarea>
+                                <small><span id="descCharCount">0</span>/5000</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Thumbnail</label>
+                                <div class="thumbnail-upload" id="thumbnailUpload">
+                                    <img id="thumbnailPreview" src="" alt="Thumbnail" style="display:none">
+                                    <button class="btn btn-outline" id="uploadThumbnailBtn">Thumbnail hochladen</button>
+                                    <input type="file" id="thumbnailInput" accept="image/*" style="display:none">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Playlist</label>
+                                <select id="uploadPlaylist">
+                                    <option value="">Keine Playlist</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kategorie</label>
+                                <select id="uploadCategory">
+                                    <option value="entertainment">Unterhaltung</option>
+                                    <option value="gaming">Gaming</option>
+                                    <option value="music">Musik</option>
+                                    <option value="education">Bildung</option>
+                                    <option value="tech">Technologie</option>
+                                    <option value="sports">Sport</option>
+                                    <option value="news">Nachrichten</option>
+                                    <option value="comedy">Comedy</option>
+                                    <option value="cooking">Kochen</option>
+                                    <option value="travel">Reisen</option>
+                                    <option value="fashion">Mode</option>
+                                    <option value="fitness">Fitness</option>
+                                    <option value="science">Wissenschaft</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Sichtbarkeit</label>
+                                <select id="uploadVisibility">
+                                    <option value="public">Öffentlich</option>
+                                    <option value="unlisted">Nicht gelistet</option>
+                                    <option value="private">Privat</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Tags</label>
+                                <input type="text" id="uploadTags" placeholder="Tags durch Komma trennen">
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="uploadComments"> Kommentare erlauben
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="uploadAgeRestrict"> Altersbeschränkung (18+)
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="uploadKids"> Für Kinder
+                                </label>
+                            </div>
+                        </div>
+                        <div class="upload-actions">
+                            <button class="btn btn-outline" id="cancelUploadBtn">Abbrechen</button>
+                            <button class="btn btn-primary" id="publishBtn">Veröffentlichen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile/Settings Page -->
+            <div id="profilePage" class="page">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <img id="profileBanner" src="" alt="Banner" class="profile-banner">
+                        <div class="profile-info">
+                            <img id="profileAvatar" src="" alt="Profil" class="profile-avatar">
+                            <div class="profile-details">
+                                <h1 id="profileName"></h1>
+                                <p id="profileHandle"></p>
+                                <div class="profile-stats">
+                                    <span><strong id="profileSubs">0</strong> Abonnenten</span>
+                                    <span><strong id="profileVideos">0</strong> Videos</span>
+                                    <span><strong id="profileViews">0</strong> Aufrufe</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="editProfileBtn">Profil bearbeiten</button>
+                        </div>
+                    </div>
+                    <div class="profile-tabs">
+                        <button class="tab-btn active" data-tab="overview">Übersicht</button>
+                        <button class="tab-btn" data-tab="videos">Videos</button>
+                        <button class="tab-btn" data-tab="analytics">Statistiken</button>
+                        <button class="tab-btn" data-tab="earnings">Einnahmen</button>
+                    </div>
+                    <div class="profile-content">
+                        <div id="overviewTab" class="tab-content active">
+                            <div class="analytics-grid">
+                                <div class="analytics-card">
+                                    <h3>Letzte 7 Tage</h3>
+                                    <div class="analytics-stats">
+                                        <div class="stat">
+                                            <i class="fas fa-eye"></i>
+                                            <h4 id="weekViews">0</h4>
+                                            <p>Aufrufe</p>
+                                        </div>
+                                        <div class="stat">
+                                            <i class="fas fa-clock"></i>
+                                            <h4 id="weekWatchTime">0h</h4>
+                                            <p>Wiedergabezeit</p>
+                                        </div>
+                                        <div class="stat">
+                                            <i class="fas fa-users"></i>
+                                            <h4 id="weekNewSubs">+0</h4>
+                                            <p>Neue Abonnenten</p>
+                                        </div>
+                                        <div class="stat">
+                                            <i class="fas fa-euro-sign"></i>
+                                            <h4 id="weekEarnings">0€</h4>
+                                            <p>Geschätzte Einnahmen</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="analytics-card">
+                                    <h3>Top Videos</h3>
+                                    <div id="topVideosList"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="videosTab" class="tab-content">
+                            <div class="video-grid" id="profileVideoGrid"></div>
+                        </div>
+                        <div id="analyticsTab" class="tab-content">
+                            <div class="chart-container">
+                                <canvas id="viewsChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="earningsTab" class="tab-content">
+                            <div class="earnings-info">
+                                <h3>Monetarisierung</h3>
+                                <p>Verdiene Geld mit deinen Inhalten durch LobiWatch Premium, Werbung und Super Thanks.</p>
+                                <button class="btn btn-primary" id="applyMonetizationBtn">Jetzt bewerben</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Page -->
+            <div id="premiumPage" class="page">
+                <div class="premium-container">
+                    <div class="premium-hero">
+                        <h1>LobiWatch Premium</h1>
+                        <p>Werbe frei, offline und im Hintergrund. Exklusive Inhalte für Premium-Mitglieder.</p>
+                        <div class="premium-features">
+                            <div class="feature">
+                                <i class="fas fa-ban"></i>
+                                <h3>Werbe frei</h3>
+                                <p>Keine Werbung vor, während oder nach Videos</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-download"></i>
+                                <h3>Offline</h3>
+                                <p>Videos herunterladen und offline ansehen</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-headphones"></i>
+                                <h3>Hintergrund</h3>
+                                <p>Weiter hören, während du andere Apps nutzt</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-music"></i>
+                                <h3>LobiWatch Music</h3>
+                                <p>Millionen Songs inklusive</p>
+                            </div>
+                        </div>
+                        <div class="premium-plans">
+                            <div class="plan-card">
+                                <h3>Monatlich</h3>
+                                <div class="price">11,99€<span>/Monat</span></div>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Alle Premium-Features</li>
+                                    <li><i class="fas fa-check"></i> Jederzeit kündbar</li>
+                                </ul>
+                                <button class="btn btn-primary" data-plan="monthly">Abonnieren</button>
+                            </div>
+                            <div class="plan-card featured">
+                                <div class="plan-badge">Beliebt</div>
+                                <h3>Jährlich</h3>
+                                <div class="price">119,99€<span>/Jahr</span></div>
+                                <p class="savings">Spare 17%</p>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Alle Premium-Features</li>
+                                    <li><i class="fas fa-check"></i> 2 Monate gratis</li>
+                                </ul>
+                                <button class="btn btn-primary" data-plan="yearly">Abonnieren</button>
+                            </div>
+                            <div class="plan-card">
+                                <h3>Familie</h3>
+                                <div class="price">17,99€<span>/Monat</span></div>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Bis zu 5 Konten</li>
+                                    <li><i class="fas fa-check"></i> Alle Premium-Features</li>
+                                </ul>
+                                <button class="btn btn-primary" data-plan="family">Abonnieren</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page">
+                <div class="settings-container">
+                    <h1>Einstellungen</h1>
+                    <div class="settings-grid">
+                        <div class="settings-section">
+                            <h2><i class="fas fa-user"></i> Konto</h2>
+                            <div class="setting-item">
+                                <label>Benutzername</label>
+                                <input type="text" id="settingsUsername">
+                            </div>
+                            <div class="setting-item">
+                                <label>E-Mail</label>
+                                <input type="email" id="settingsEmail">
+                            </div>
+                            <div class="setting-item">
+                                <label>Passwort ändern</label>
+                                <button class="btn btn-outline">Passwort ändern</button>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <h2><i class="fas fa-palette"></i> Darstellung</h2>
+                            <div class="setting-item">
+                                <label>Theme</label>
+                                <select id="settingsTheme">
+                                    <option value="dark">Dunkel</option>
+                                    <option value="light">Hell</option>
+                                    <option value="system">System</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Sprache</label>
+                                <select id="settingsLanguage">
+                                    <option value="de">Deutsch</option>
+                                    <option value="en">English</option>
+                                    <option value="es">Español</option>
+                                    <option value="fr">Français</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <h2><i class="fas fa-bell"></i> Benachrichtigungen</h2>
+                            <div class="setting-item toggle">
+                                <label>Push-Benachrichtigungen</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="settingsPush" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item toggle">
+                                <label>E-Mail-Benachrichtigungen</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="settingsEmail" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <h2><i class="fas fa-lock"></i> Datenschutz</h2>
+                            <div class="setting-item toggle">
+                                <label>Verlauf speichern</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="settingsHistory" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item toggle">
+                                <label>Öffentliches Profil</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="settingsPublic" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="saveSettingsBtn">Einstellungen speichern</button>
+                </div>
+            </div>
+
+            <!-- Notifications Page -->
+            <div id="notificationsPage" class="page">
+                <div class="notifications-container">
+                    <h1>Benachrichtigungen</h1>
+                    <div class="notifications-list" id="notificationsList">
+                        <!-- Wird dynamisch gefüllt -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Page -->
+            <div id="historyPage" class="page">
+                <div class="history-container">
+                    <h1>Wiedergabeverlauf</h1>
+                    <div class="history-actions">
+                        <button class="btn btn-outline" id="clearHistoryBtn">Verlauf löschen</button>
+                        <button class="btn btn-outline" id="pauseHistoryBtn">Verlauf pausieren</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <!-- Wird dynamisch gefüllt -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Page -->
+            <div id="libraryPage" class="page">
+                <div class="library-container">
+                    <h1>Bibliothek</h1>
+                    <div class="library-sections">
+                        <section class="library-section">
+                            <h2>Playlists</h2>
+                            <div class="playlists-grid" id="playlistsGrid">
+                                <div class="playlist-card create" id="createPlaylistBtn">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Neue Playlist</span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="library-section">
+                            <h2>Später ansehen</h2>
+                            <div class="video-grid" id="watchLaterGrid"></div>
+                        </section>
+                        <section class="library-section">
+                            <h2>Liked Videos</h2>
+                            <div class="video-grid" id="likedVideosGrid"></div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" data-close>&times;</button>
+            <div class="modal-header">
+                <h2>Anmelden</h2>
+                <p>Willkommen zurück bei LobiWatch</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Passwort</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox" id="rememberMe"> Angemeldet bleiben
+                    </label>
+                    <a href="#" id="forgotPasswordLink">Passwort vergessen?</a>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Anmelden</button>
+                <div class="social-login">
+                    <p>Oder anmelden mit</p>
+                    <div class="social-buttons">
+                        <button type="button" class="social-btn google">
+                            <i class="fab fa-google"></i>
+                        </button>
+                        <button type="button" class="social-btn github">
+                            <i class="fab fa-github"></i>
+                        </button>
+                        <button type="button" class="social-btn discord">
+                            <i class="fab fa-discord"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="modal-footer">
+                    Noch kein Konto? <a href="#" id="switchToSignup">Jetzt registrieren</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <button class="modal-close" data-close>&times;</button>
+            <div class="modal-header">
+                <h2>Registrieren</h2>
+                <p>Erstelle dein kostenloses LobiWatch Konto</p>
+            </div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label>Benutzername</label>
+                    <input type="text" id="signupUsername" required minlength="3" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Passwort</label>
+                    <input type="password" id="signupPassword" required minlength="8">
+                    <small>Mindestens 8 Zeichen</small>
+                </div>
+                <div class="form-group">
+                    <label>Passwort bestätigen</label>
+                    <input type="password" id="signupPasswordConfirm" required>
+                </div>
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox" id="acceptTerms" required>
+                        Ich akzeptiere die <a href="#">AGB</a> und <a href="#">Datenschutzerklärung</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Registrieren</button>
+                <p class="modal-footer">
+                    Bereits ein Konto? <a href="#" id="switchToLogin">Jetzt anmelden</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <button class="modal-close" data-close>&times;</button>
+            <div class="modal-header">
+                <h2>Teilen</h2>
+            </div>
+            <div class="share-options">
+                <button class="share-btn" data-platform="whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </button>
+                <button class="share-btn" data-platform="twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </button>
+                <button class="share-btn" data-platform="facebook">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </button>
+                <button class="share-btn" data-platform="telegram">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram</span>
+                </button>
+                <button class="share-btn" data-platform="email">
+                    <i class="fas fa-envelope"></i>
+                    <span>E-Mail</span>
+                </button>
+                <button class="share-btn" data-platform="embed">
+                    <i class="fas fa-code"></i>
+                    <span>Einbetten</span>
+                </button>
+            </div>
+            <div class="share-link">
+                <input type="text" id="shareLink" readonly>
+                <button class="btn btn-primary" id="copyShareLink">
+                    <i class="fas fa-copy"></i> Kopieren
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Playlist Modal -->
+    <div class="modal" id="createPlaylistModal">
+        <div class="modal-content">
+            <button class="modal-close" data-close>&times;</button>
+            <div class="modal-header">
+                <h2>Neue Playlist</h2>
+            </div>
+            <form id="createPlaylistForm">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="playlistName" required maxlength="150">
+                </div>
+                <div class="form-group">
+                    <label>Beschreibung</label>
+                    <textarea id="playlistDescription" maxlength="500"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Sichtbarkeit</label>
+                    <select id="playlistVisibility">
+                        <option value="public">Öffentlich</option>
+                        <option value="unlisted">Nicht gelistet</option>
+                        <option value="private">Privat</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Erstellen</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Menu Dropdown -->
+    <div class="dropdown-menu" id="userMenu">
+        <div class="dropdown-header">
+            <img id="dropdownAvatar" src="" alt="Profil">
+            <div>
+                <strong id="dropdownName"></strong>
+                <p id="dropdownEmail"></p>
+            </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item" data-page="channel">
+            <i class="fas fa-user"></i>
+            <span>Dein Kanal</span>
+        </a>
+        <a href="#" class="dropdown-item" data-page="studio">
+            <i class="fas fa-film"></i>
+            <span>LobiWatch Studio</span>
+        </a>
+        <a href="#" class="dropdown-item" data-page="premium">
+            <i class="fas fa-crown"></i>
+            <span>Premium kaufen</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item" data-page="settings">
+            <i class="fas fa-cog"></i>
+            <span>Einstellungen</span>
+        </a>
+        <a href="#" class="dropdown-item" id="switchAccountBtn">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Konto wechseln</span>
+        </a>
+        <a href="#" class="dropdown-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Abmelden</span>
+        </a>
+    </div>
+
+    <!-- Create Menu Dropdown -->
+    <div class="dropdown-menu" id="createMenu">
+        <a href="#" class="dropdown-item" data-action="upload">
+            <i class="fas fa-upload"></i>
+            <span>Video hochladen</span>
+        </a>
+        <a href="#" class="dropdown-item" data-action="short">
+            <i class="fas fa-bolt"></i>
+            <span>Short erstellen</span>
+        </a>
+        <a href="#" class="dropdown-item" data-action="live">
+            <i class="fas fa-broadcast-tower"></i>
+            <span>Live gehen</span>
+        </a>
+        <a href="#" class="dropdown-item" data-action="post">
+            <i class="fas fa-pen"></i>
+            <span>Beitrag erstellen</span>
+        </a>
+    </div>
+
+    <!-- Notification Dropdown -->
+    <div class="dropdown-menu notification-dropdown" id="notificationDropdown">
+        <div class="dropdown-header">
+            <h3>Benachrichtigungen</h3>
+            <button class="btn-text" id="markAllReadBtn">Alle als gelesen markieren</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Wird dynamisch gefüllt -->
+        </div>
+        <a href="#" class="dropdown-footer" data-page="notifications">Alle anzeigen</a>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <a href="#" class="context-item" data-action="watchlater">
+            <i class="fas fa-clock"></i>
+            <span>Später ansehen</span>
+        </a>
+        <a href="#" class="context-item" data-action="queue">
+            <i class="fas fa-list"></i>
+            <span>Zur Warteschlange</span>
+        </a>
+        <a href="#" class="context-item" data-action="playlist">
+            <i class="fas fa-plus"></i>
+            <span>Zu Playlist hinzufügen</span>
+        </a>
+        <a href="#" class="context-item" data-action="download">
+            <i class="fas fa-download"></i>
+            <span>Herunterladen</span>
+        </a>
+        <a href="#" class="context-item" data-action="share">
+            <i class="fas fa-share"></i>
+            <span>Teilen</span>
+        </a>
+        <a href="#" class="context-item" data-action="notinterested">
+            <i class="fas fa-times"></i>
+            <span>Nicht interessiert</span>
+        </a>
+        <a href="#" class="context-item" data-action="report">
+            <i class="fas fa-flag"></i>
+            <span>Melden</span>
+        </a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/video.js"></script>
+    <script src="js/social.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
